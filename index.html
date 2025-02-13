@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>antimagic.zone</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tile {
+      position: absolute;
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 150px;
+      height: 150px;
+      transform-origin: center;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const imageUrl = '/static/images/amz.jpg'; // Replace with your image URL
+    const tileSize = 150;
+
+    function createTile(x, y) {
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.style.backgroundImage = `url(${imageUrl})`;
+      tile.style.left = `${x}px`;
+      tile.style.top = `${y}px`;
+
+      // Add a weird transformation: random rotation and scale
+      const rotation = Math.random() * 360; // Rotate between 0-360 degrees
+      const scale = 0.5 + Math.random(); // Random scale between 0.5 and 1.5
+      tile.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+
+      document.body.appendChild(tile);
+    }
+
+    function fillPageWithTiles() {
+      const cols = Math.ceil(window.innerWidth / tileSize);
+      const rows = Math.ceil(window.innerHeight / tileSize);
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          createTile(col * tileSize, row * tileSize);
+        }
+      }
+    }
+
+    // Fill the page with tiles on load
+    fillPageWithTiles();
+
+    // Refill on window resize
+    window.addEventListener('resize', () => {
+      document.body.innerHTML = '';
+      fillPageWithTiles();
+    });
+  </script>
+</body>
+</html>
