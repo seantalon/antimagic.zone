@@ -1,65 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>antimagic.zone</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      position: relative;
-    }
 
-    .tile {
-      position: absolute;
-      background-size: cover;
-      background-repeat: no-repeat;
-      width: 150px;
-      height: 150px;
-      transform-origin: center;
-    }
-  </style>
-</head>
-<body>
-  <script>
-    const imageUrl = '/static/images/amz.jpg'; // Replace with your image URL
-    const tileSize = 150;
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weird Image Tiling</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        position: relative;
+      }
 
-    function createTile(x, y) {
-      const tile = document.createElement('div');
-      tile.className = 'tile';
-      tile.style.backgroundImage = `url(${imageUrl})`;
-      tile.style.left = `${x}px`;
-      tile.style.top = `${y}px`;
+      .tile {
+        position: absolute;
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 150px;
+        height: 150px;
+        transform-origin: center;
+      }
 
-      // Add a weird transformation: random rotation and scale
-      const rotation = Math.random() * 360; // Rotate between 0-360 degrees
-      const scale = 0.5 + Math.random(); // Random scale between 0.5 and 1.5
-      tile.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+      .bouncing-image {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        transform-origin: center;
+      }
+    </style>
+  </head>
 
-      document.body.appendChild(tile);
-    }
+  <body>
+    <script>
+      const imageUrl = '/static/images/amz.jpg'; // Replace with your server-hosted image location
+      const bounceImageUrl = '/static/images/thassarian.webp'; // Replace with your server-hosted image location for bouncing image
+      const tileSize = 150;
 
-    function fillPageWithTiles() {
-      const cols = Math.ceil(window.innerWidth / tileSize);
-      const rows = Math.ceil(window.innerHeight / tileSize);
+      function createTile(x, y) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.style.backgroundImage = `url(${imageUrl})`;
+        tile.style.left = `${x}px`;
+        tile.style.top = `${y}px`;
 
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-          createTile(col * tileSize, row * tileSize);
+        // Add a weird transformation: random rotation and scale
+        const rotation = Math.random() * 360; // Rotate between 0-360 degrees
+        const scale = 0.5 + Math.random(); // Random scale between 0.5 and 1.5
+        tile.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+
+        document.body.appendChild(tile);
+      }
+
+      function fillPageWithTiles() {
+        const cols = Math.ceil(window.innerWidth / tileSize);
+        const rows = Math.ceil(window.innerHeight / tileSize);
+
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
+            createTile(col * tileSize, row * tileSize);
+          }
         }
       }
-    }
 
-    // Fill the page with tiles on load
-    fillPageWithTiles();
+      function createBouncingImage() {
+        const bouncingImage = document.createElement('div');
+        bouncingImage.className = 'bouncing-image';
+        bouncingImage.style.backgroundImage = `url(${bounceImageUrl})`;
 
-    // Refill on window resize
-    window.addEventListener('resize', () => {
-      document.body.innerHTML = '';
+        let x = Math.random() * (window.innerWidth - 100);
+        let y = Math.random() * (window.innerHeight - 100);
+        let dx = (Math.random() - 0.5) * 10;
+        let dy = (Math.random() - 0.5) * 10;
+        let rotation = 0;
+        let rotationSpeed = (Math.random() - 0.5) * 10; // Random spin speed
+
+        function move() {
+          x += dx;
+          y += dy;
+          rotation += rotationSpeed;
+
+          // Bounce off walls
+          if (x <= 0 || x >= window.innerWidth - 100) dx *= -1;
+          if (y <= 0 || y >= window.innerHeight - 100) dy *= -1;
+
+          bouncingImage.style.left = `${x}px`;
+          bouncingImage.style.top = `${y}px`;
+          bouncingImage.style.transform = `rotate(${rotation}deg)`;
+
+          requestAnimationFrame(move);
+        }
+
+        document.body.appendChild(bouncingImage);
+        move();
+      }
+
+      // Fill the page with tiles on load
       fillPageWithTiles();
-    });
-  </script>
-</body>
+
+      // Create the bouncing image
+      createBouncingImage();
+
+      // Refill on window resize
+      window.addEventListener('resize', () => {
+        document.body.innerHTML = '';
+        fillPageWithTiles();
+        createBouncingImage();
+      });
+    </script>
+  </body>
+
 </html>
